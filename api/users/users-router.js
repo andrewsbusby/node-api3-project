@@ -24,8 +24,8 @@ router.get('/:id', validateUserId, (req, res) => {
 
 router.post('/', validateUser, (req, res, next) => {
   User.insert({ name: req.name})
-    .then(newUser => {
-      res.status(201).json(newUser)
+    .then(createUser => {
+      res.status(201).json(createUser)
     })
     .catch(next)
 });
@@ -61,12 +61,14 @@ router.get('/:id/posts', validateUserId, async (req, res, next) => {
   }
 });
 
-router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
-  // RETURN THE NEWLY CREATED USER POST
-  // this needs a middleware to verify user id
-  // and another middleware to check that the request body is valid
-  console.log(req.user)
-  console.log(req.text)
+router.post('/:id/posts', validateUserId, validatePost, async (req, res, next) => {
+  try{
+   const newPost = await Post.insert({ text: req.text, user_id: req.params.id })
+   res.json(201).json(newPost)
+  }
+  catch (err) {
+    next(err)
+  }
 });
 
 router.use((err, req, res, next) => {
