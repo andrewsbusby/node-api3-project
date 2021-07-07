@@ -43,15 +43,20 @@ if(!name ||!name.trim()) {
 
 function validatePost(req, res, next) {
   // DO YOUR MAGIC
-  console.log('validatePost middleware')
+  const { text } = req.body
+if(!text ||!text.trim()) {
+  res.status(400).json({
+    message: "missing required text field"
+  })
+} else {
+  req.text = text.trim()
   next()
 }
-
+}
 // do not forget to expose these functions to other modules
 module.exports = {
   logger,
   validateUserId,
   validateUser,
-  validatePost
-
+  validatePost,
 }
